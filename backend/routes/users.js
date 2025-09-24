@@ -204,6 +204,10 @@ router.put('/:id', verifyToken, validateMongoId('id'), validateUserUpdate, async
         return res.status(400).json({
           success: false,
           message: 'Username already taken'
+            }
+        )
+      }
+      )
     }
 
     const user = await User.findByIdAndUpdate(

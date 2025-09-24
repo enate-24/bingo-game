@@ -192,7 +192,7 @@ A complete backend implementation for a Bingo Game Management System built with 
 ## Security Features
 
 - **Authentication**: JWT-based authentication
-- **Authorization**: Role-based access control (Admin, Operator, Player)
+- **Authorization**: Role-based access control (Admin, Chaser, Player)
 - **Input Validation**: Comprehensive validation using Joi and express-validator
 - **Rate Limiting**: API rate limiting to prevent abuse
 - **CORS**: Configured for specific origins
