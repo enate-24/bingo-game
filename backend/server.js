@@ -2,29 +2,37 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const mongoose = require('mongoose');
+const { createClient } = require('@supabase/supabase-js');
 const http = require('http');
 const path = require('path');
 require('dotenv').config();
 
-// Database connection function
+// Supabase connection
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_ANON_KEY;
+
+let supabase = null;
+
 const connectDB = async () => {
   try {
-    const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/bingo-game';
-    await mongoose.connect(mongoURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log('✅ MongoDB connected successfully');
+    if (supabaseUrl && supabaseKey) {
+      supabase = createClient(supabaseUrl, supabaseKey);
+      console.log('✅ Supabase connected successfully');
+    } else {
+      console.log('⚠️ Supabase credentials not found, running in development mode');
+    }
   } catch (error) {
-    console.error('❌ MongoDB connection error:', error);
-    process.exit(1);
+    console.error('❌ Supabase connection error:', error);
+    console.log('⚠️ Running without database connection');
   }
 };
 
 const app = express();
 const server = http.createServer(app);
 const PORT = process.env.PORT || 5000;
+
+// Make Supabase client available globally
+global.supabase = supabase;
 
 // Initialize WebSocket service
 const WebSocketService = require('./services/websocket');
@@ -164,7 +172,6 @@ process.on('SIGTERM', () => {
   console.log('SIGTERM received. Shutting down gracefully...');
   server.close(() => {
     console.log('Process terminated');
-    mongoose.connection.close();
   });
 });
 
@@ -172,7 +179,6 @@ process.on('SIGINT', () => {
   console.log('SIGINT received. Shutting down gracefully...');
   server.close(() => {
     console.log('Process terminated');
-    mongoose.connection.close();
   });
 });
 
