@@ -37,7 +37,7 @@ router.get('/', verifyToken, validatePagination, async (req, res) => {
     if (status) query.status = status;
 
     const transactions = await Transaction.find(query)
-      .populate('userId', 'username email profile')
+      .populate('userId', 'username shopName profile')
       .populate('gameId', 'title gameId')
       .populate('cartelaId', 'cartelaId')
       .sort({ createdAt: -1 })
@@ -479,7 +479,7 @@ router.get('/export', verifyToken, requireAdmin, validateDateRange, async (req, 
     if (status) query.status = status;
 
     const transactions = await Transaction.find(query)
-      .populate('userId', 'username email')
+      .populate('userId', 'username shopName')
       .populate('gameId', 'title gameId')
       .populate('cartelaId', 'cartelaId')
       .sort({ createdAt: -1 });
@@ -490,7 +490,7 @@ router.get('/export', verifyToken, requireAdmin, validateDateRange, async (req, 
       return [
         t.transactionId,
         t.userId?.username || 'N/A',
-        t.userId?.email || 'N/A',
+        t.userId?.shopName || 'N/A',
         t.gameId?.title || 'N/A',
         t.cartelaId?.cartelaId || 'N/A',
         t.type,

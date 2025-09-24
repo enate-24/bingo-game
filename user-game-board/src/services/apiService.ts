@@ -134,12 +134,12 @@ class ApiService {
   }
 
   // Authentication methods
-  async login(email: string, password: string): Promise<ApiResponse<{ token: string; user: any }>> {
+  async login(username: string, password: string): Promise<ApiResponse<{ token: string; user: any }>> {
     const response = await this.makeRequest<{ token: string; user: any }>(
       API_ENDPOINTS.AUTH.LOGIN,
       {
         method: 'POST',
-        body: { email, password },
+        body: { username, password },
       }
     );
 

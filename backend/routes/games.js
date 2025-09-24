@@ -122,7 +122,7 @@ router.get('/stats', verifyToken, requireAdmin, validateDateRange, async (req, r
 // @route   POST /api/games
 // @desc    Create a new game
 // @access  Private/Operator
-router.post('/', verifyToken, requireOperator, validateGameCreation, async (req, res) => {
+router.post('/', verifyToken, requireChaser, validateGameCreation, async (req, res) => {
   try {
     const gameData = {
       ...req.body,
@@ -190,7 +190,7 @@ router.get('/:id', validateMongoId('id'), async (req, res) => {
 
 // @route   PUT /api/games/:id
 // @desc    Update game
-// @access  Private/Operator (own games) or Admin
+// @access  Private/Chaser (own games) or Admin
 router.put('/:id', verifyToken, validateMongoId('id'), checkGameAccess, validateGameUpdate, async (req, res) => {
   try {
     const updates = req.body;
@@ -285,7 +285,7 @@ router.delete('/:id', verifyToken, requireAdmin, validateMongoId('id'), async (r
 
 // @route   POST /api/games/:id/start
 // @desc    Start a game
-// @access  Private/Operator (own games) or Admin
+// @access  Private/Chaser (own games) or Admin
 router.post('/:id/start', verifyToken, validateMongoId('id'), checkGameAccess, validateGameStatus(['waiting']), async (req, res) => {
   try {
     const game = req.game;
@@ -317,7 +317,7 @@ router.post('/:id/start', verifyToken, validateMongoId('id'), checkGameAccess, v
 
 // @route   POST /api/games/:id/pause
 // @desc    Pause a game
-// @access  Private/Operator (own games) or Admin
+// @access  Private/Chaser (own games) or Admin
 router.post('/:id/pause', verifyToken, validateMongoId('id'), checkGameAccess, validateGameStatus(['active']), async (req, res) => {
   try {
     const game = req.game;
@@ -341,7 +341,7 @@ router.post('/:id/pause', verifyToken, validateMongoId('id'), checkGameAccess, v
 
 // @route   POST /api/games/:id/resume
 // @desc    Resume a paused game
-// @access  Private/Operator (own games) or Admin
+// @access  Private/Chaser (own games) or Admin
 router.post('/:id/resume', verifyToken, validateMongoId('id'), checkGameAccess, validateGameStatus(['paused']), async (req, res) => {
   try {
     const game = req.game;
@@ -365,7 +365,7 @@ router.post('/:id/resume', verifyToken, validateMongoId('id'), checkGameAccess, 
 
 // @route   POST /api/games/:id/end
 // @desc    End a game
-// @access  Private/Operator (own games) or Admin
+// @access  Private/Chaser (own games) or Admin
 router.post('/:id/end', verifyToken, validateMongoId('id'), checkGameAccess, validateGameStatus(['active', 'paused']), async (req, res) => {
   try {
     const game = req.game;
@@ -389,7 +389,7 @@ router.post('/:id/end', verifyToken, validateMongoId('id'), checkGameAccess, val
 
 // @route   POST /api/games/:id/draw-number
 // @desc    Draw a bingo number
-// @access  Private/Operator (own games) or Admin
+// @access  Private/Chaser (own games) or Admin
 router.post('/:id/draw-number', verifyToken, validateMongoId('id'), checkGameAccess, validateGameStatus(['active']), validateBingoNumber, async (req, res) => {
   try {
     const { number } = req.body;
@@ -452,7 +452,7 @@ router.post('/:id/draw-number', verifyToken, validateMongoId('id'), checkGameAcc
 
 // @route   POST /api/games/:id/verify-winner
 // @desc    Verify a winner
-// @access  Private/Operator (own games) or Admin
+// @access  Private/Chaser (own games) or Admin
 router.post('/:id/verify-winner', verifyToken, validateMongoId('id'), checkGameAccess, async (req, res) => {
   try {
     const { cartelaId, position, prizeAmount } = req.body;
@@ -531,7 +531,7 @@ router.post('/:id/verify-winner', verifyToken, validateMongoId('id'), checkGameA
 
 // @route   GET /api/games/:id/cartelas
 // @desc    Get all cartelas for a game
-// @access  Private/Operator (own games) or Admin
+// @access  Private/Chaser (own games) or Admin
 router.get('/:id/cartelas', verifyToken, validateMongoId('id'), checkGameAccess, validatePagination, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -590,7 +590,7 @@ router.get('/:id/winners', validateMongoId('id'), async (req, res) => {
 
 // @route   GET /api/games/:id/transactions
 // @desc    Get transactions for a game
-// @access  Private/Operator (own games) or Admin
+// @access  Private/Chaser (own games) or Admin
 router.get('/:id/transactions', verifyToken, validateMongoId('id'), checkGameAccess, async (req, res) => {
   try {
     const transactions = await Transaction.getGameTransactions(req.params.id);

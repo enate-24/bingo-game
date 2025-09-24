@@ -29,7 +29,7 @@ router.get('/', verifyToken, requireAdmin, validatePagination, async (req, res) 
     if (search) {
       query.$or = [
         { username: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } },
+        { shopName: { $regex: search, $options: 'i' } },
         { 'profile.firstName': { $regex: search, $options: 'i' } },
         { 'profile.lastName': { $regex: search, $options: 'i' } }
       ];
@@ -197,23 +197,13 @@ router.put('/:id', verifyToken, validateMongoId('id'), validateUserUpdate, async
     }
 
     // Check if username or email already exists (if being updated)
-    if (updates.username || updates.email) {
+    if (updates.username) {
       const existingUser = await User.findOne({
         _id: { $ne: id },
-        $or: [
-          ...(updates.username ? [{ username: updates.username }] : []),
-          ...(updates.email ? [{ email: updates.email }] : [])
-        ]
-      });
-
-      if (existingUser) {
+        username: updates.username
         return res.status(400).json({
           success: false,
-          message: existingUser.username === updates.username 
-            ? 'Username already taken' 
-            : 'Email already exists'
-        });
-      }
+          message: 'Username already taken'
     }
 
     const user = await User.findByIdAndUpdate(

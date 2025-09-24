@@ -66,12 +66,12 @@ const requireAdmin = (req, res, next) => {
   next();
 };
 
-// Check if user is operator or admin
-const requireOperator = (req, res, next) => {
-  if (!['admin', 'operator'].includes(req.user.role)) {
+// Check if user is chaser or admin
+const requireChaser = (req, res, next) => {
+  if (!['admin', 'chaser'].includes(req.user.role)) {
     return res.status(403).json({
       success: false,
-      message: 'Access denied. Operator privileges required.'
+      message: 'Access denied. Chaser privileges required.'
     });
   }
   next();
@@ -207,8 +207,8 @@ const checkGameAccess = async (req, res, next) => {
       return next();
     }
 
-    // Operators can only access their own games
-    if (req.user.role === 'operator' && game.operator.toString() === req.user._id.toString()) {
+    // Chasers can only access their own games
+    if (req.user.role === 'chaser' && game.chaser.toString() === req.user._id.toString()) {
       req.game = game;
       return next();
     }
@@ -259,7 +259,7 @@ const logActivity = (action) => {
 module.exports = {
   verifyToken,
   requireAdmin,
-  requireOperator,
+  requireChaser,
   optionalAuth,
   createRateLimiter,
   generateToken,

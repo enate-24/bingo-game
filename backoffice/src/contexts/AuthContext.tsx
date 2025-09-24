@@ -4,14 +4,15 @@ import apiService from '../services/apiService';
 interface User {
   id: string;
   name: string;
-  email: string;
+  username: string;
+  shopName?: string;
   role: string;
   avatar?: string;
 }
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (username: string, password: string) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
   error: string | null;
@@ -35,7 +36,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setUser({
               id: response.data._id || response.data.id,
               name: response.data.username || response.data.name,
-              email: response.data.email,
+              username: response.data.username,
+              shopName: response.data.shopName,
               role: response.data.role === 'admin' ? 'Administrator' : response.data.role || 'User',
               avatar: response.data.profile?.avatar
             });
@@ -56,13 +58,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setError(null);
     
     try {
-      const response = await apiService.login(email, password);
+      const response = await apiService.login(username, password);
       
       if (response.success && response.data) {
             setUser({
               id: response.data.user._id || response.data.user.id,
               name: response.data.user.username || response.data.user.name,
-              email: response.data.user.email,
+              username: response.data.user.username,
+              shopName: response.data.user.shopName,
               role: response.data.user.role === 'admin' ? 'Administrator' : response.data.user.role || 'User',
               avatar: response.data.user.profile?.avatar
             });

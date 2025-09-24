@@ -21,27 +21,26 @@ const loginLimiter = createRateLimiter(15 * 60 * 1000, 10); // 10 login attempts
 // @access  Public
 router.post('/register', authLimiter, validateUserRegistration, async (req, res) => {
   try {
-    const { username, email, password, profile } = req.body;
+    const { username, password, profile, role, shopName } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({
-      $or: [{ email }, { username }]
+      username: username
     });
 
     if (existingUser) {
       return res.status(400).json({
         success: false,
-        message: existingUser.email === email 
-          ? 'User with this email already exists' 
-          : 'Username already taken'
+        message: 'Username already taken'
       });
     }
 
     // Create new user
     const user = new User({
       username,
-      email,
       password,
+      role: role || 'user',
+      shopName: role === 'chaser' ? shopName : undefined,
       profile: profile || {}
     });
 
@@ -61,8 +60,8 @@ router.post('/register', authLimiter, validateUserRegistration, async (req, res)
         user: {
           id: user._id,
           username: user.username,
-          email: user.email,
           role: user.role,
+          shopName: user.shopName,
           profile: user.profile,
           status: user.status,
           createdAt: user.createdAt
@@ -93,10 +92,10 @@ router.post('/register', authLimiter, validateUserRegistration, async (req, res)
 // @access  Public
 router.post('/login', loginLimiter, validateUserLogin, async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
-    // Find user by email
-    const user = await User.findOne({ email });
+    // Find user by username
+    const user = await User.findOne({ username });
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -135,8 +134,8 @@ router.post('/login', loginLimiter, validateUserLogin, async (req, res) => {
         user: {
           id: user._id,
           username: user.username,
-          email: user.email,
           role: user.role,
+          shopName: user.shopName,
           profile: user.profile,
           status: user.status,
           gameStats: user.gameStats,
@@ -167,8 +166,8 @@ router.get('/me', verifyToken, async (req, res) => {
         user: {
           id: user._id,
           username: user.username,
-          email: user.email,
           role: user.role,
+          shopName: user.shopName,
           profile: user.profile,
           status: user.status,
           gameStats: user.gameStats,
@@ -225,14 +224,14 @@ router.put('/change-password', verifyToken, validatePasswordChange, async (req, 
 // @access  Public
 router.post('/forgot-password', authLimiter, validatePasswordReset, async (req, res) => {
   try {
-    const { email } = req.body;
+    const { username } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ username });
     if (!user) {
       // Don't reveal if email exists or not
       return res.json({
         success: true,
-        message: 'If an account with that email exists, a password reset link has been sent.'
+        message: 'If an account with that username exists, a password reset link has been sent.'
       });
     }
 
@@ -241,11 +240,11 @@ router.post('/forgot-password', authLimiter, validatePasswordReset, async (req, 
 
     // In a real application, you would send an email here
     // For now, we'll just return the token (remove this in production)
-    console.log(`Password reset token for ${email}: ${resetToken}`);
+    console.log(`Password reset token for ${username}: ${resetToken}`);
 
     res.json({
       success: true,
-      message: 'If an account with that email exists, a password reset link has been sent.',
+      message: 'If an account with that username exists, a password reset link has been sent.',
       // Remove this in production - only for development
       resetToken: process.env.NODE_ENV === 'development' ? resetToken : undefined
     });
@@ -330,7 +329,6 @@ router.get('/verify-token', verifyToken, (req, res) => {
       user: {
         id: req.user._id,
         username: req.user.username,
-        email: req.user.email,
         role: req.user.role
       }
     }

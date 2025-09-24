@@ -135,7 +135,7 @@ const gameSchema = new mongoose.Schema({
       max: 50
     }
   },
-  operator: {
+  chaser: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
@@ -189,7 +189,7 @@ const gameSchema = new mongoose.Schema({
 // Indexes for better performance
 gameSchema.index({ gameId: 1 });
 gameSchema.index({ status: 1 });
-gameSchema.index({ operator: 1 });
+gameSchema.index({ chaser: 1 });
 gameSchema.index({ scheduledStartTime: 1 });
 gameSchema.index({ createdAt: -1 });
 
@@ -272,7 +272,7 @@ gameSchema.methods.calculateStatistics = function() {
 // Static method to get active games
 gameSchema.statics.getActiveGames = function() {
   return this.find({ status: { $in: ['waiting', 'active', 'paused'] } })
-    .populate('operator', 'username email')
+    .populate('chaser', 'username shopName')
     .sort({ createdAt: -1 });
 };
 

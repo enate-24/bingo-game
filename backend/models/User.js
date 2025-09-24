@@ -10,14 +10,6 @@ const userSchema = new mongoose.Schema({
     minlength: [3, 'Username must be at least 3 characters long'],
     maxlength: [30, 'Username cannot exceed 30 characters']
   },
-  email: {
-    type: String,
-    required: [true, 'Email is required'],
-    unique: true,
-    trim: true,
-    lowercase: true,
-    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email']
-  },
   password: {
     type: String,
     required: [true, 'Password is required'],
@@ -25,8 +17,16 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['user', 'admin','operator','player'],
+    enum: ['user', 'admin','chaser','player'],
     default: 'user'
+  },
+  shopName: {
+    type: String,
+    trim: true,
+    maxlength: [100, 'Shop name cannot exceed 100 characters'],
+    required: function() {
+      return this.role === 'chaser';
+    }
   },
   profile: {
     firstName: {
@@ -94,7 +94,6 @@ const userSchema = new mongoose.Schema({
 
 // Index for better query performance
 userSchema.index({ username: 1 });
-userSchema.index({ email: 1 });
 userSchema.index({ status: 1 });
 userSchema.index({ 'gameStats.totalGames': -1 });
 

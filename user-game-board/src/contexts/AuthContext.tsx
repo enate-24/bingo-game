@@ -7,7 +7,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
   refreshUser: () => Promise<void>;
 }
@@ -48,7 +48,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // For development, set a default user if no token
         setUser({
           username: 'Player One',
-          email: 'player@example.com',
           role: 'player',
           profile: {
             firstName: 'Player',
@@ -73,17 +72,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     initializeAuth();
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (username: string, password: string): Promise<boolean> => {
     try {
       setIsLoading(true);
       setError(null);
 
-      const response = await apiService.login(email, password);
+      const response = await apiService.login(username, password);
       
       if (response.success && response.data) {
         const userData = response.data.user;
         const transformedUser: User = {
           ...userData,
+          email: userData.username, // For compatibility
           balance: userData.gameStats?.totalWin - userData.gameStats?.totalBet || 0,
           fullName: userData.profile?.firstName && userData.profile?.lastName 
             ? `${userData.profile.firstName} ${userData.profile.lastName}`.trim()
@@ -119,6 +119,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const userData = response.data;
         const transformedUser: User = {
           ...userData,
+          email: userData.username, // For compatibility
           balance: userData.gameStats?.totalWin - userData.gameStats?.totalBet || 0,
           fullName: userData.profile?.firstName && userData.profile?.lastName 
             ? `${userData.profile.firstName} ${userData.profile.lastName}`.trim()

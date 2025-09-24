@@ -7,7 +7,7 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { login, error, isLoading } = useAuth();
@@ -17,7 +17,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     setIsSubmitting(true);
 
     try {
-      const success = await login(email, password);
+      const success = await login(username, password);
       if (success) {
         onLoginSuccess?.();
       }
@@ -43,16 +43,16 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-              Email
+            <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-2">
+              Username
             </label>
             <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-              placeholder="Enter your email"
+              placeholder="Enter your username"
               required
             />
           </div>
@@ -106,7 +106,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
 
         <div className="mt-6 text-center text-sm text-gray-400">
           <p>Demo Credentials:</p>
-          <p>Email: admin@example.com</p>
+          <p>Username: admin</p>
           <p>Password: password123</p>
         </div>
       </div>

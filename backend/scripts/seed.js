@@ -42,7 +42,6 @@ const createUsers = async () => {
     const users = [
       {
         username: 'admin',
-        email: 'admin@bingo.com',
         password: await bcrypt.hash('admin123', 12),
         role: 'admin',
         status: 'active',
@@ -70,18 +69,18 @@ const createUsers = async () => {
         }
       },
       {
-        username: 'operator1',
-        email: 'operator1@bingo.com',
-        password: await bcrypt.hash('operator123', 12),
-        role: 'operator',
+        username: 'chaser1',
+        password: await bcrypt.hash('chaser123', 12),
+        role: 'chaser',
+        shopName: 'Downtown Bingo Hall',
         status: 'active',
         profile: {
           firstName: 'John',
-          lastName: 'Operator',
+          lastName: 'Chaser',
           phone: '+1234567891',
           dateOfBirth: new Date('1985-05-15'),
           address: {
-            street: '456 Operator Ave',
+            street: '456 Chaser Ave',
             city: 'Game City',
             state: 'GC',
             zipCode: '54321',
@@ -91,7 +90,6 @@ const createUsers = async () => {
       },
       {
         username: 'player1',
-        email: 'player1@bingo.com',
         password: await bcrypt.hash('player123', 12),
         role: 'player',
         status: 'active',
@@ -124,7 +122,6 @@ const createUsers = async () => {
       },
       {
         username: 'player2',
-        email: 'player2@bingo.com',
         password: await bcrypt.hash('player123', 12),
         role: 'player',
         status: 'active',
@@ -157,7 +154,6 @@ const createUsers = async () => {
       },
       {
         username: 'player3',
-        email: 'player3@bingo.com',
         password: await bcrypt.hash('player123', 12),
         role: 'player',
         status: 'active',
@@ -203,7 +199,7 @@ const createUsers = async () => {
 const createGames = async (users) => {
   try {
     const admin = users.find(u => u.role === 'admin');
-    const operator = users.find(u => u.role === 'operator');
+    const chaser = users.find(u => u.role === 'chaser');
 
     const games = [
       {
@@ -211,7 +207,7 @@ const createGames = async (users) => {
         description: 'Join our evening jackpot game with amazing prizes!',
         gameType: 'traditional',
         status: 'waiting',
-        operator: operator._id,
+        chaser: chaser._id,
         maxPlayers: 100,
         currentPlayers: 0,
         cartelaPrice: 10.00,
@@ -260,7 +256,6 @@ const createGames = async (users) => {
         description: 'Fast-paced bingo game for quick wins!',
         gameType: 'speed',
         status: 'finished',
-        operator: operator._id,
         maxPlayers: 50,
         currentPlayers: 35,
         cartelaPrice: 5.00,
@@ -316,7 +311,7 @@ const createGames = async (users) => {
         description: 'Special weekend game with bonus prizes!',
         gameType: 'progressive',
         status: 'active',
-        operator: admin._id,
+        chaser: admin._id,
         maxPlayers: 200,
         currentPlayers: 87,
         cartelaPrice: 15.00,
@@ -492,11 +487,11 @@ const seedDatabase = async () => {
     console.log(`Transactions created: ${transactions.length}`);
     
     console.log('\n=== Login Credentials ===');
-    console.log('Admin: admin@bingo.com / admin123');
-    console.log('Operator: operator1@bingo.com / operator123');
-    console.log('Player 1: player1@bingo.com / player123');
-    console.log('Player 2: player2@bingo.com / player123');
-    console.log('Player 3: player3@bingo.com / player123');
+    console.log('Admin: admin / admin123');
+    console.log('Chaser: chaser1 / chaser123 (Shop: Downtown Bingo Hall)');
+    console.log('Player 1: player1 / player123');
+    console.log('Player 2: player2 / player123');
+    console.log('Player 3: player3 / player123');
     
     process.exit(0);
   } catch (error) {

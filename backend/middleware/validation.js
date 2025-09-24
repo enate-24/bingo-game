@@ -26,16 +26,22 @@ const validateUserRegistration = [
     .matches(/^[a-zA-Z0-9_]+$/)
     .withMessage('Username can only contain letters, numbers, and underscores'),
   
-  body('email')
-    .isEmail()
-    .normalizeEmail()
-    .withMessage('Please provide a valid email address'),
-  
   body('password')
     .isLength({ min: 6 })
     .withMessage('Password must be at least 6 characters long')
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
     .withMessage('Password must contain at least one lowercase letter, one uppercase letter, and one number'),
+  
+  body('role')
+    .optional()
+    .isIn(['user', 'admin', 'chaser', 'player'])
+    .withMessage('Invalid role'),
+  
+  body('shopName')
+    .optional()
+    .trim()
+    .isLength({ max: 100 })
+    .withMessage('Shop name cannot exceed 100 characters'),
   
   body('profile.firstName')
     .optional()
@@ -58,10 +64,10 @@ const validateUserRegistration = [
 ];
 
 const validateUserLogin = [
-  body('email')
-    .isEmail()
-    .normalizeEmail()
-    .withMessage('Please provide a valid email address'),
+  body('username')
+    .trim()
+    .isLength({ min: 3 })
+    .withMessage('Username is required'),
   
   body('password')
     .notEmpty()
@@ -79,11 +85,11 @@ const validateUserUpdate = [
     .matches(/^[a-zA-Z0-9_]+$/)
     .withMessage('Username can only contain letters, numbers, and underscores'),
   
-  body('email')
+  body('shopName')
     .optional()
-    .isEmail()
-    .normalizeEmail()
-    .withMessage('Please provide a valid email address'),
+    .trim()
+    .isLength({ max: 100 })
+    .withMessage('Shop name cannot exceed 100 characters'),
   
   body('profile.firstName')
     .optional()
@@ -356,10 +362,10 @@ const validatePasswordChange = [
 ];
 
 const validatePasswordReset = [
-  body('email')
-    .isEmail()
-    .normalizeEmail()
-    .withMessage('Please provide a valid email address'),
+  body('username')
+    .trim()
+    .isLength({ min: 3 })
+    .withMessage('Username is required'),
   
   handleValidationErrors
 ];
