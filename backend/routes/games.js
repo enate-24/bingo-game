@@ -3,7 +3,7 @@ const Game = require('../models/Game');
 const Cartela = require('../models/Cartela');
 const Transaction = require('../models/Transaction');
 const User = require('../models/User');
-const { verifyToken, requireAdmin, requireOperator, checkGameAccess } = require('../middleware/auth');
+const { verifyToken, requireAdmin, requireChaser, checkGameAccess } = require('../middleware/auth');
 const { 
   validateGameCreation, 
   validateGameUpdate, 
